@@ -1,0 +1,527 @@
+{
+  "users": [
+    {
+      "id": "usr_001",
+      "email": "dispatcher@routemind.ai",
+      "password": "password123",
+      "name": "Operations Lead",
+      "role": "Fleet Dispatcher",
+      "hub": "South India Logistics Grid"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "drv_01",
+      "driverCode": "DRV-8401",
+      "name": "Arun Kumar",
+      "phone": "+91 98421 11204",
+      "licenseNumber": "TN-38-2018-0048123",
+      "assignedVehicleId": "veh_01",
+      "status": "Active",
+      "experienceYears": 8
+    },
+    {
+      "id": "drv_02",
+      "driverCode": "DRV-8402",
+      "name": "Praveen Raj",
+      "phone": "+91 97890 22401",
+      "licenseNumber": "TN-38-2016-0091244",
+      "assignedVehicleId": "veh_02",
+      "status": "Active",
+      "experienceYears": 6
+    },
+    {
+      "id": "drv_03",
+      "driverCode": "DRV-8403",
+      "name": "Karthik Selvan",
+      "phone": "+91 94432 33102",
+      "licenseNumber": "TN-59-2019-0012903",
+      "assignedVehicleId": "veh_03",
+      "status": "Active",
+      "experienceYears": 10
+    },
+    {
+      "id": "drv_04",
+      "driverCode": "DRV-8404",
+      "name": "Murugan V.",
+      "phone": "+91 99441 44207",
+      "licenseNumber": "TN-45-2017-0056192",
+      "assignedVehicleId": "veh_04",
+      "status": "On Break",
+      "experienceYears": 12
+    },
+    {
+      "id": "drv_05",
+      "driverCode": "DRV-8405",
+      "name": "Suresh Babu",
+      "phone": "+91 98940 55211",
+      "licenseNumber": "KA-01-2020-0084321",
+      "assignedVehicleId": "veh_05",
+      "status": "Active",
+      "experienceYears": 5
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "veh_01",
+      "registrationNumber": "TN-38-AB-1204",
+      "vehicleName": "Tata Prima 5530.S",
+      "vehicleModel": "Prima 5530.S (Heavy Haulage)",
+      "vehicleType": "Heavy Truck",
+      "fuelType": "Diesel",
+      "driverId": "drv_01",
+      "driverName": "Arun Kumar",
+      "status": "In Transit",
+      "speedLimit": 80,
+      "fuelCapacityLiters": 400,
+      "lastKnownLocation": {
+        "latitude": 10.3624,
+        "longitude": 77.9695,
+        "speed": 68,
+        "heading": 145,
+        "locationName": "Near Dindigul 4-Lane Bypass (NH 83)",
+        "timestamp": "2026-10-05T14:28:40.894Z",
+        "fuelPercent": 74
+      }
+    },
+    {
+      "id": "veh_02",
+      "registrationNumber": "TN-38-CD-2401",
+      "vehicleName": "Ashok Leyland 2820",
+      "vehicleModel": "Ecomet 2820 Cargo",
+      "vehicleType": "Truck",
+      "fuelType": "Diesel",
+      "driverId": "drv_02",
+      "driverName": "Praveen Raj",
+      "status": "Idle",
+      "speedLimit": 80,
+      "fuelCapacityLiters": 350,
+      "lastKnownLocation": {
+        "latitude": 10.73,
+        "longitude": 77.52,
+        "speed": 0,
+        "heading": 130,
+        "locationName": "Dharapuram Rest Plaza",
+        "timestamp": "2026-10-05T14:28:40.895Z",
+        "fuelPercent": 62
+      }
+    },
+    {
+      "id": "veh_03",
+      "registrationNumber": "TN-59-EF-3102",
+      "vehicleName": "BharatBenz 3528C",
+      "vehicleModel": "3528C Commercial Tipper",
+      "vehicleType": "Heavy Truck",
+      "fuelType": "Diesel",
+      "driverId": "drv_03",
+      "driverName": "Karthik Selvan",
+      "status": "In Transit",
+      "speedLimit": 80,
+      "fuelCapacityLiters": 380,
+      "lastKnownLocation": {
+        "latitude": 10.82,
+        "longitude": 77.01,
+        "speed": 72,
+        "heading": 155,
+        "locationName": "Kinathukadavu Corridor (NH 83)",
+        "timestamp": "2026-10-05T14:28:40.895Z",
+        "fuelPercent": 86
+      }
+    },
+    {
+      "id": "veh_04",
+      "registrationNumber": "TN-45-GH-4207",
+      "vehicleName": "Eicher Pro 3019",
+      "vehicleModel": "Pro 3019 Long Wheelbase",
+      "vehicleType": "Light Commercial Vehicle",
+      "fuelType": "Diesel",
+      "driverId": "drv_04",
+      "driverName": "Murugan V.",
+      "status": "Alert",
+      "speedLimit": 60,
+      "fuelCapacityLiters": 250,
+      "lastKnownLocation": {
+        "latitude": 10.485,
+        "longitude": 77.747,
+        "speed": 54,
+        "heading": 180,
+        "locationName": "Oddanchatram Rural Bypass",
+        "timestamp": "2026-10-05T14:28:40.895Z",
+        "fuelPercent": 55
+      }
+    },
+    {
+      "id": "veh_05",
+      "registrationNumber": "KA-01-MJ-5211",
+      "vehicleName": "Mahindra Treo Zor EV",
+      "vehicleModel": "e-Supro Freight Carrier",
+      "vehicleType": "Electric Vehicle",
+      "fuelType": "Electric",
+      "driverId": "drv_05",
+      "driverName": "Suresh Babu",
+      "status": "In Transit",
+      "speedLimit": 70,
+      "fuelCapacityLiters": 100,
+      "lastKnownLocation": {
+        "latitude": 10.0833,
+        "longitude": 78.0333,
+        "speed": 58,
+        "heading": 140,
+        "locationName": "Vadipatti Express Stretch",
+        "timestamp": "2026-10-05T14:28:40.895Z",
+        "fuelPercent": 48
+      }
+    }
+  ],
+  "trips": [
+    {
+      "id": "TRIP-306500",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T17:11:46.500Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-301121",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T17:11:41.121Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-295818",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T17:11:35.818Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-485403",
+      "origin": "Coimbatore",
+      "destination": "Tiruppur",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        10.7915267,
+        77.5325466
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 84,
+      "estimatedDurationMinutes": 97,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:41:25.403Z",
+      "eta": "1 hr 37 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 84
+    },
+    {
+      "id": "TRIP-461786",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:41:01.786Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-456988",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:40:56.988Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-439925",
+      "origin": "Coimbatore",
+      "destination": "SRM Institute of Science and Technology",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        12.8234361,
+        80.0450412
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 497,
+      "estimatedDurationMinutes": 573,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:40:39.925Z",
+      "eta": "9 hr 33 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 497
+    },
+    {
+      "id": "TRIP-427158",
+      "origin": "Coimbatore",
+      "destination": "tiruppu",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9252,
+        78.1198
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:40:27.158Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-414064",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:40:14.064Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-386237",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:39:46.237Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-154268",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:35:54.268Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-149365",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0018115,
+        76.9628425
+      ],
+      "destCoords": [
+        9.9261153,
+        78.1140983
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 219,
+      "estimatedDurationMinutes": 253,
+      "recommendedRoadName": "National Highway Corridor",
+      "startTime": "2026-10-05T16:35:49.365Z",
+      "eta": "4 hr 13 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 219
+    },
+    {
+      "id": "TRIP-2026-001",
+      "origin": "Coimbatore, Tamil Nadu",
+      "destination": "Madurai, Tamil Nadu",
+      "originCoords": [
+        11.0168,
+        76.9558
+      ],
+      "destCoords": [
+        9.9252,
+        78.1198
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "IN_TRANSIT",
+      "distanceKm": 214,
+      "estimatedDurationMinutes": 258,
+      "recommendedRoadName": "via NH 83 & Dindigul 4-Lane Bypass",
+      "startTime": "2026-10-05T12:28:40.895Z",
+      "eta": "14:35",
+      "distanceCompletedKm": 146,
+      "distanceRemainingKm": 68
+    }
+  ],
+  "telemetryLogs": [],
+  "alerts": [
+    {
+      "id": "alt_001",
+      "severity": "yellow",
+      "type": "speed",
+      "title": "Speed Warning: TN-38-AB-1204",
+      "message": "Vehicle speed touched 84 km/h momentarily near Vedasandur. Current speed normalized to 68 km/h.",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "timestamp": "2026-10-05T14:13:40.895Z",
+      "status": "Active"
+    },
+    {
+      "id": "alt_002",
+      "severity": "orange",
+      "type": "traffic",
+      "title": "Arterial Congestion on Oddanchatram Junction",
+      "message": "Agricultural market vehicles causing 12 min crawling traffic on state artery. AI recommends continuing on 4-lane bypass.",
+      "vehicleRegistration": "TN-45-GH-4207",
+      "timestamp": "2026-10-05T13:53:40.895Z",
+      "status": "Active"
+    }
+  ],
+  "deliveries": [
+    {
+      "id": "del_01",
+      "trackingCode": "RMD-78210",
+      "pickupLocation": "Coimbatore Logistics Depot, Eachanari",
+      "dropLocation": "Madurai Central Cargo Yard, Mattuthavani",
+      "cargoDescription": "Industrial Machine Spares & Assemblies",
+      "priority": "HIGH",
+      "assignedVehicle": "TN-38-AB-1204",
+      "assignedDriver": "Arun Kumar",
+      "status": "In Transit",
+      "createdAt": "2026-10-05T14:28:40.895Z"
+    }
+  ]
+}
