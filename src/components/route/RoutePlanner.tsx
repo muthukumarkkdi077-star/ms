@@ -265,6 +265,54 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
         </div>
       </div>
 
+      {/* QUICK PRESET CHIPS */}
+      <div className="pt-1">
+        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+          Popular Corridors:
+        </span>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            onClick={() => {
+              setFrom('Singanallur');
+              setTo('Chinniyampalayam');
+              if (onOriginChange) onOriginChange('Singanallur');
+              if (onDestinationChange) onDestinationChange('Chinniyampalayam');
+              onFindRoute({ from: 'Singanallur', to: 'Chinniyampalayam' });
+            }}
+            className="px-2 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold transition-all cursor-pointer"
+          >
+            Singanallur ➔ Chinniyampalayam
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setFrom('Coimbatore');
+              setTo('Madurai');
+              if (onOriginChange) onOriginChange('Coimbatore');
+              if (onDestinationChange) onDestinationChange('Madurai');
+              onFindRoute({ from: 'Coimbatore', to: 'Madurai' });
+            }}
+            className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition-all cursor-pointer"
+          >
+            Coimbatore ➔ Madurai
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setFrom('Chennai');
+              setTo('Madurai');
+              if (onOriginChange) onOriginChange('Chennai');
+              if (onDestinationChange) onDestinationChange('Madurai');
+              onFindRoute({ from: 'Chennai', to: 'Madurai' });
+            }}
+            className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition-all cursor-pointer"
+          >
+            Chennai ➔ Madurai
+          </button>
+        </div>
+      </div>
+
       {/* SEARCH FASTEST ROUTE SUBMIT BUTTON */}
       <button
         type="submit"

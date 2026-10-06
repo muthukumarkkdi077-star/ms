@@ -77,7 +77,7 @@ export const LiveTrackerPage: React.FC = () => {
     loadFleet();
   }, []);
 
-  // 1b. Check query params (from & to) from navigation
+  // 1b. Check query params (from & to) from navigation or auto-initialize
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const f = params.get('from');
@@ -86,40 +86,26 @@ export const LiveTrackerPage: React.FC = () => {
       setOrigin(f);
       setDestination(t);
       handleDispatchRoute({ from: f, to: t });
+    } else {
+      // Calculate initial route between current origin and destination
+      handleDispatchRoute({ from: origin, to: destination });
     }
   }, [location.search]);
 
-  // 2. Clear state when origin changes
+  // 2. Origin change
   const handleOriginChange = (newOrigin: string) => {
     setOrigin(newOrigin);
-    setRoutes([]);
-    setSelectedRouteId('');
-    setCurrentTrip(null);
-    setActiveTelemetry(null);
-    setIsAwaitingTelemetry(true);
-    setTripReport(null);
   };
 
-  // 3. Clear state when destination changes
+  // 3. Destination change
   const handleDestinationChange = (newDest: string) => {
     setDestination(newDest);
-    setRoutes([]);
-    setSelectedRouteId('');
-    setCurrentTrip(null);
-    setActiveTelemetry(null);
-    setIsAwaitingTelemetry(true);
-    setTripReport(null);
   };
 
   // 4. Calculate real Google Routes and create new Trip Session
   const handleDispatchRoute = async (params: { from: string; to: string }) => {
+    if (!params.from || !params.to) return;
     setIsCalculating(true);
-    // Clear all previous tracking & route state
-    setRoutes([]);
-    setSelectedRouteId('');
-    setCurrentTrip(null);
-    setActiveTelemetry(null);
-    setIsAwaitingTelemetry(true);
     setSimulatedWaypointIdx(0);
 
     try {
