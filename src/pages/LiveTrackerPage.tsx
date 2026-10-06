@@ -31,7 +31,8 @@ import {
   Compass,
   X,
   RefreshCw,
-  Info
+  Info,
+  ExternalLink
 } from 'lucide-react';
 
 export const LiveTrackerPage: React.FC = () => {
@@ -75,6 +76,18 @@ export const LiveTrackerPage: React.FC = () => {
     }
     loadFleet();
   }, []);
+
+  // 1b. Check query params (from & to) from navigation
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const f = params.get('from');
+    const t = params.get('to');
+    if (f && t) {
+      setOrigin(f);
+      setDestination(t);
+      handleDispatchRoute({ from: f, to: t });
+    }
+  }, [location.search]);
 
   // 2. Clear state when origin changes
   const handleOriginChange = (newOrigin: string) => {
@@ -252,26 +265,26 @@ export const LiveTrackerPage: React.FC = () => {
     : 0;
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-[#090d16] text-slate-100 relative">
+    <div className="flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-[#090d16] dark:bg-[#090d16] light:bg-[#f8fafc] text-slate-100 dark:text-slate-100 light:text-slate-800 relative transition-colors">
       {/* Top Banner Status Bar */}
-      <div className="h-12 px-4 sm:px-6 bg-[#0c1220] border-b border-slate-800 flex items-center justify-between text-xs z-20">
+      <div className="h-12 px-4 sm:px-6 bg-[#0c1220] dark:bg-[#0c1220] light:bg-white border-b border-slate-800 dark:border-slate-800 light:border-slate-200 flex items-center justify-between text-xs z-20">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <Radio className={`w-3.5 h-3.5 ${!isAwaitingTelemetry ? 'text-emerald-400 animate-pulse' : 'text-amber-400'}`} />
-            <span className="font-bold text-white uppercase tracking-wider text-[11px]">
+            <Radio className={`w-3.5 h-3.5 ${!isAwaitingTelemetry ? 'text-emerald-500 animate-pulse' : 'text-amber-500'}`} />
+            <span className="font-bold text-white dark:text-white light:text-slate-900 uppercase tracking-wider text-[11px]">
               Live GPS Telemetry:
             </span>
           </div>
 
           {!isAwaitingTelemetry && activeTelemetry ? (
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[10px] font-bold">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 dark:text-emerald-300 light:text-emerald-700 font-mono text-[10px] font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               Connected • {activeTelemetry.latitude.toFixed(4)}° N, {activeTelemetry.longitude.toFixed(4)}° E
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-500 dark:text-amber-300 light:text-amber-700 font-mono text-[10px] font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              Waiting for live GPS telemetry
+              GPS Simulation Mode • Ready for live telemetry
             </span>
           )}
         </div>
@@ -280,7 +293,7 @@ export const LiveTrackerPage: React.FC = () => {
           {currentTrip && (
             <button
               onClick={handleOpenReport}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 font-semibold text-[11px] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 dark:bg-slate-800 light:bg-slate-100 hover:bg-slate-700 text-slate-200 dark:text-slate-200 light:text-slate-700 hover:text-white dark:hover:text-white light:hover:text-slate-900 border border-slate-700 dark:border-slate-700 light:border-slate-300 font-semibold text-[11px] transition-colors cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5 text-cyan-400" />
               <span>Trip Report</span>
@@ -300,7 +313,7 @@ export const LiveTrackerPage: React.FC = () => {
       {/* Main Workspace: Left Controls + Center Map + Right Analytics */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         {/* LEFT COLUMN: Route Dispatcher & Route Options */}
-        <div className="w-full lg:w-96 p-4 border-r border-slate-800 bg-[#090d16]/95 overflow-y-auto space-y-4 shrink-0 z-10">
+        <div className="w-full lg:w-96 p-4 border-r border-slate-800 dark:border-slate-800 light:border-slate-200 bg-[#090d16]/95 dark:bg-[#090d16]/95 light:bg-white overflow-y-auto space-y-4 shrink-0 z-10">
           {/* 1. Whole India Route Search Component */}
           <RoutePlanner
             onFindRoute={handleDispatchRoute}
@@ -312,13 +325,13 @@ export const LiveTrackerPage: React.FC = () => {
           />
 
           {/* 2. Vehicle Selector */}
-          <div className="p-3.5 rounded-2xl bg-[#0f172a]/90 border border-slate-800 space-y-2">
+          <div className="p-3.5 rounded-2xl bg-slate-900/80 dark:bg-[#0f172a]/90 light:bg-slate-50 border border-slate-800 dark:border-slate-800 light:border-slate-200 space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+              <span className="font-bold text-slate-400 dark:text-slate-400 light:text-slate-500 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
                 <Truck className="w-3.5 h-3.5 text-cyan-400" />
                 Assigned Fleet Vehicle
               </span>
-              <span className="text-[10px] text-cyan-400 font-mono font-bold">
+              <span className="text-[10px] text-cyan-500 dark:text-cyan-400 light:text-cyan-600 font-mono font-bold">
                 {fleetVehicles.length} Registered
               </span>
             </div>
@@ -329,7 +342,7 @@ export const LiveTrackerPage: React.FC = () => {
                 const found = fleetVehicles.find((v) => v.id === e.target.value);
                 if (found) setAssignedVehicle(found);
               }}
-              className="w-full px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-400 font-mono font-semibold"
+              className="w-full px-3 py-2 text-xs bg-slate-950/60 dark:bg-slate-900 light:bg-white border border-slate-700/80 dark:border-slate-700 light:border-slate-300 rounded-xl text-white dark:text-white light:text-slate-900 focus:outline-none focus:border-cyan-400 font-mono font-semibold"
             >
               {fleetVehicles.map((v) => (
                 <option key={v.id} value={v.id}>
@@ -346,9 +359,17 @@ export const LiveTrackerPage: React.FC = () => {
                 <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
                   Google Traffic Corridors
                 </h4>
-                <span className="text-[10px] font-mono text-slate-400">
-                  {routes.length} Alternatives
-                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const url = googleMapsService.getGoogleMapsUrl(origin, destination);
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold cursor-pointer transition-colors"
+                >
+                  <span>See on Google Maps</span>
+                  <ExternalLink className="w-3 h-3" />
+                </button>
               </div>
 
               {routes.map((route) => (
@@ -369,7 +390,7 @@ export const LiveTrackerPage: React.FC = () => {
               <div>
                 <p className="text-xs font-bold text-white">No Active Corridor</p>
                 <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                  Enter Origin & Destination anywhere across India and click "Dispatch & Track Route" to compute real Google Directions.
+                  Enter Origin & Destination anywhere across India and click "Search Fastest Route" to compute real Google Directions.
                 </p>
               </div>
             </div>
@@ -391,19 +412,19 @@ export const LiveTrackerPage: React.FC = () => {
         </div>
 
         {/* RIGHT COLUMN: Real-Time Telemetry & Trip Analytics */}
-        <div className="w-full lg:w-80 p-4 border-l border-slate-800 bg-[#090d16]/95 overflow-y-auto space-y-4 shrink-0 z-10">
-          <div className="flex items-center justify-between pb-1 border-b border-slate-800">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
-              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="w-full lg:w-80 p-4 border-l border-slate-200 dark:border-slate-800 bg-slate-50/95 dark:bg-[#090d16]/95 overflow-y-auto space-y-4 shrink-0 z-10 text-slate-800 dark:text-slate-100">
+          <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-800">
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <Activity className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               Live Trip Telemetry
             </h3>
-            <span className="text-[10px] font-mono text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+            <span className="text-[10px] font-mono text-cyan-700 dark:text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
               {currentTrip ? 'SESSION_ACTIVE' : 'IDLE'}
             </span>
           </div>
 
           {/* Speedometer */}
-          <div className="p-4 rounded-2xl bg-[#0f172a]/90 border border-slate-800 flex flex-col items-center">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#0f172a]/90 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center">
             <Speedometer
               speed={displaySpeed}
               maxSpeed={120}
@@ -413,56 +434,56 @@ export const LiveTrackerPage: React.FC = () => {
           </div>
 
           {/* Route Progress */}
-          <div className="p-3.5 rounded-2xl bg-[#0f172a]/90 border border-slate-800 space-y-2">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0f172a]/90 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider">
+              <span className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider">
                 Trip Progress
               </span>
-              <span className="font-mono font-extrabold text-cyan-400 text-sm">
+              <span className="font-mono font-extrabold text-cyan-600 dark:text-cyan-400 text-sm">
                 {displayProgress}%
               </span>
             </div>
 
-            <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+            <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-300 dark:border-slate-700/60 p-0.5">
               <div
                 className="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-emerald-400 rounded-full transition-all duration-500"
                 style={{ width: `${Math.max(3, displayProgress)}%` }}
               />
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
-              <span className="font-semibold text-slate-200 truncate max-w-[100px]">{origin}</span>
-              <span className="text-slate-600">━━━━</span>
-              <span className="font-semibold text-slate-200 truncate max-w-[100px]">{destination}</span>
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[100px]">{origin}</span>
+              <span className="text-slate-400 dark:text-slate-600">━━━━</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[100px]">{destination}</span>
             </div>
           </div>
 
           {/* Live Metrics Grid */}
           <div className="grid grid-cols-2 gap-2.5">
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Total Distance</span>
-              <span className="font-mono font-extrabold text-white text-base">
+            <div className="p-3 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Total Distance</span>
+              <span className="font-mono font-extrabold text-slate-900 dark:text-white text-base">
                 {activeRoute?.distanceKm ? `${activeRoute.distanceKm} km` : '—'}
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Estimated ETA</span>
-              <span className="font-mono font-extrabold text-cyan-300 text-base">
+            <div className="p-3 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Estimated ETA</span>
+              <span className="font-mono font-extrabold text-sky-600 dark:text-cyan-300 text-base">
                 {activeRoute?.eta || '—'}
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Traffic State</span>
-              <span className="font-mono font-bold text-emerald-400 text-xs capitalize mt-1 block">
+            <div className="p-3 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Traffic State</span>
+              <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs capitalize mt-1 block">
                 {activeRoute?.trafficLevel || 'Normal'}
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Delay Risk</span>
-              <span className="font-mono font-bold text-cyan-400 text-xs mt-1 block">
+            <div className="p-3 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Delay Risk</span>
+              <span className="font-mono font-bold text-sky-600 dark:text-cyan-400 text-xs mt-1 block">
                 {activeRoute?.delayRiskPercent ? `${activeRoute.delayRiskPercent}% (Low)` : 'Minimal'}
               </span>
             </div>
@@ -470,17 +491,17 @@ export const LiveTrackerPage: React.FC = () => {
 
           {/* Assigned Driver Card */}
           {assignedVehicle && (
-            <div className="p-3.5 rounded-2xl bg-[#0f172a]/90 border border-slate-800 space-y-2 text-xs">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0f172a]/90 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 text-xs">
+              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                 Operator in Transit
               </span>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-white">{assignedVehicle.driverName || 'Designated Driver'}</div>
-                  <div className="text-[11px] text-slate-400">{assignedVehicle.registrationNumber}</div>
+                  <div className="font-bold text-slate-900 dark:text-white">{assignedVehicle.driverName || 'Designated Driver'}</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">{assignedVehicle.registrationNumber}</div>
                 </div>
                 <div className="text-right">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
                     {assignedVehicle.fuelType}
                   </span>
                 </div>
@@ -492,30 +513,30 @@ export const LiveTrackerPage: React.FC = () => {
 
       {/* DRIVER GPS TRANSMITTER DRAWER (Mobile GPS / Hardware Telemetry simulator) */}
       {showDriverTransmitter && (
-        <div className="absolute bottom-4 right-4 sm:right-8 w-96 rounded-2xl bg-[#0f172a] border border-cyan-500/40 shadow-2xl p-4 text-slate-100 z-30 space-y-3 backdrop-blur-xl">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+        <div className="absolute bottom-4 right-4 sm:right-8 w-96 rounded-2xl bg-white dark:bg-[#0f172a] border border-cyan-500/40 shadow-2xl p-4 text-slate-900 dark:text-slate-100 z-30 space-y-3 backdrop-blur-xl">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <Smartphone className="w-4 h-4 text-cyan-400" />
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">
+              <Smartphone className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white">
                 Driver Telemetry Transmitter
               </h4>
             </div>
             <button
               onClick={() => setShowDriverTransmitter(false)}
-              className="text-slate-400 hover:text-white cursor-pointer"
+              className="text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            Transmit real GPS telemetry to backend endpoint <code className="text-cyan-400 font-mono">POST /api/telemetry/location</code>. Real markers and speedometer will update dynamically over SSE stream.
+          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+            Transmit real GPS telemetry to backend endpoint <code className="text-cyan-600 dark:text-cyan-400 font-mono">POST /api/telemetry/location</code>. Real markers and speedometer will update dynamically over SSE stream.
           </p>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Speed (km/h):</span>
-              <span className="font-mono text-cyan-300 font-bold">{txSpeed} km/h</span>
+              <span className="text-slate-500 dark:text-slate-400">Speed (km/h):</span>
+              <span className="font-mono text-cyan-700 dark:text-cyan-300 font-bold">{txSpeed} km/h</span>
             </div>
             <input
               type="range"
@@ -523,7 +544,7 @@ export const LiveTrackerPage: React.FC = () => {
               max="120"
               value={txSpeed}
               onChange={(e) => setTxSpeed(Number(e.target.value))}
-              className="w-full accent-cyan-400 cursor-pointer"
+              className="w-full accent-cyan-500 cursor-pointer"
             />
           </div>
 
@@ -531,7 +552,7 @@ export const LiveTrackerPage: React.FC = () => {
             <button
               onClick={() => handleTransmitGps(false)}
               disabled={isTransmittingGps || !currentTrip}
-              className="flex-1 py-2 px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+              className="flex-1 py-2 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Step Next Waypoint</span>
@@ -541,7 +562,7 @@ export const LiveTrackerPage: React.FC = () => {
               onClick={() => handleTransmitGps(true)}
               disabled={isTransmittingGps || !currentTrip}
               title="Use Phone/Device Geolocation Sensor"
-              className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+              className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-cyan-700 dark:text-cyan-400 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               <MapPin className="w-3.5 h-3.5" />
               <span>Use Device GPS</span>
@@ -552,86 +573,86 @@ export const LiveTrackerPage: React.FC = () => {
 
       {/* TRIP REPORT MODAL */}
       {showTripReport && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-[#0f172a] border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-5 border-b border-slate-800 bg-[#090d16] flex items-center justify-between">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <FileText className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-extrabold text-white">
+                <FileText className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
                   RouteMind AI Logistics Trip Report
                 </h3>
               </div>
               <button
                 onClick={() => setShowTripReport(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
+            <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-600 dark:text-slate-300">
               {isLoadingReport ? (
                 <div className="text-center py-12 text-slate-400">
-                  <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-cyan-400" />
+                  <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-cyan-600 dark:text-cyan-400" />
                   Generating verified trip audit...
                 </div>
               ) : tripReport ? (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Origin</span>
-                      <span className="font-bold text-white text-sm">{tripReport.summary.origin}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Origin</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">{tripReport.summary.origin}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Destination</span>
-                      <span className="font-bold text-white text-sm">{tripReport.summary.destination}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Destination</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">{tripReport.summary.destination}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Registration</span>
-                      <span className="font-mono font-bold text-cyan-300 text-sm">{tripReport.summary.vehicleRegistration}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Registration</span>
+                      <span className="font-mono font-bold text-cyan-700 dark:text-cyan-300 text-sm">{tripReport.summary.vehicleRegistration}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Assigned Driver</span>
-                      <span className="font-bold text-white">{tripReport.summary.driverName}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Assigned Driver</span>
+                      <span className="font-bold text-slate-900 dark:text-white">{tripReport.summary.driverName}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Total Distance</span>
-                      <span className="font-mono font-bold text-emerald-400">{tripReport.summary.totalDistance}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Total Distance</span>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">{tripReport.summary.totalDistance}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Estimated ETA</span>
-                      <span className="font-mono font-bold text-white">{tripReport.summary.eta}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Estimated ETA</span>
+                      <span className="font-mono font-bold text-slate-900 dark:text-white">{tripReport.summary.eta}</span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">
+                    <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider">
                       Corridor Performance & Risk
                     </h4>
-                    <div className="grid grid-cols-3 gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <div className="grid grid-cols-3 gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
                       <div>
-                        <span className="text-[10px] text-slate-400 block">Traffic Risk</span>
-                        <span className="font-bold text-emerald-400">{tripReport.riskAssessment.trafficRisk}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Traffic Risk</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">{tripReport.riskAssessment.trafficRisk}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 block">Weather Risk</span>
-                        <span className="font-bold text-cyan-400">{tripReport.riskAssessment.weatherRisk}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Weather Risk</span>
+                        <span className="font-bold text-sky-600 dark:text-cyan-400">{tripReport.riskAssessment.weatherRisk}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 block">Safety Grade</span>
-                        <span className="font-bold text-white">{tripReport.riskAssessment.roadSafetyGrade}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Safety Grade</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{tripReport.riskAssessment.roadSafetyGrade}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 text-cyan-200 space-y-1.5">
+                  <div className="p-4 rounded-2xl bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-500/30 text-cyan-900 dark:text-cyan-200 space-y-1.5">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-cyan-400" />
-                      <span className="font-extrabold text-xs uppercase tracking-wider text-cyan-400">
+                      <Sparkles className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                      <span className="font-extrabold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400">
                         AI Dispatch Intelligence Recommendation
                       </span>
                     </div>
-                    <p className="text-[12px] leading-relaxed text-slate-300">
+                    <p className="text-[12px] leading-relaxed text-slate-700 dark:text-slate-300">
                       {tripReport.aiDispatcherRecommendation}
                     </p>
                   </div>
@@ -641,10 +662,10 @@ export const LiveTrackerPage: React.FC = () => {
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-[#090d16] flex justify-end">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] flex justify-end">
               <button
                 onClick={() => setShowTripReport(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold"
+                className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold cursor-pointer"
               >
                 Close Report
               </button>

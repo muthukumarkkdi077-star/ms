@@ -6,6 +6,8 @@
 
 import { RouteOption, TrafficSegment, RouteFeature, LiveTrafficInfo } from '../types';
 import { simulationService } from './simulationService';
+import { googleMapsService } from './googleMapsService';
+import { vehicleTrackingService } from './vehicleTrackingService';
 
 // Coordinates for Coimbatore to Madurai corridor (NH 83 & connecting arteries)
 export const COIMBATORE_COORDS: [number, number] = [11.0168, 76.9558];
@@ -90,7 +92,7 @@ const DEFAULT_ROUTES: RouteOption[] = [
   {
     id: 'route_b',
     name: 'NH-83 Express & Dindigul 4-Lane Bypass',
-    codeName: 'ROUTE 1',
+    codeName: 'RECOMMENDED ROUTE',
     distanceKm: 214,
     durationMin: 258, // 4 hr 18 min
     trafficLevel: 'moderate',
@@ -108,11 +110,11 @@ const DEFAULT_ROUTES: RouteOption[] = [
       'Synchronized multi-stop toll telemetry'
     ],
     aiExplanation:
-      'Route 1 is evaluated as the optimal driving corridor between Coimbatore and Madurai. It leverages the freshly resurfaced NH-83 four-lane corridor bypassing Dindigul urban gridlock, cutting estimated fuel consumption by 14% and ensuring stable telemetry tracking.',
+      'Route evaluated as the optimal driving corridor between Coimbatore and Madurai. It leverages the freshly resurfaced NH-83 four-lane corridor bypassing Dindigul urban gridlock, cutting estimated fuel consumption by 14% and ensuring stable telemetry tracking.',
     eta: '4 hr 18 min',
     roadCondition: 'Smooth',
     weatherImpact: 'None',
-    color: '#00f0ff', // Cyan / Electric Blue (Primary)
+    color: '#10b981', // Emerald (Primary Recommended)
     coordinates: COIMBATORE_MADURAI_ROUTE_1,
     trafficSegments: [
       { coordinates: COIMBATORE_MADURAI_ROUTE_1.slice(0, 4), level: 'low' },
@@ -147,7 +149,7 @@ const DEFAULT_ROUTES: RouteOption[] = [
   {
     id: 'route_a',
     name: 'Palladam & Dharapuram Arterial',
-    codeName: 'ROUTE 2',
+    codeName: 'ALTERNATIVE ROUTE',
     distanceKm: 221,
     durationMin: 272, // 4 hr 32 min
     trafficLevel: 'heavy',
@@ -164,11 +166,11 @@ const DEFAULT_ROUTES: RouteOption[] = [
       '14 minute predicted signal delay'
     ],
     aiExplanation:
-      'Route 2 passes through the Palladam industrial belt with heavy cargo transit and surface road bottlenecks, adding approximately 14 minutes of cumulative transit latency.',
+      'Alternative corridor passes through the Palladam industrial belt with heavy cargo transit and surface road bottlenecks, adding approximately 14 minutes of cumulative transit latency.',
     eta: '4 hr 32 min',
     roadCondition: 'Moderate',
     weatherImpact: 'None',
-    color: '#f59e0b', // Amber / Warning
+    color: '#14b8a6', // Teal (Alternative)
     coordinates: COIMBATORE_MADURAI_ROUTE_2,
     trafficSegments: [
       { coordinates: COIMBATORE_MADURAI_ROUTE_2.slice(0, 4), level: 'heavy' },
@@ -194,7 +196,7 @@ const DEFAULT_ROUTES: RouteOption[] = [
   {
     id: 'route_c',
     name: 'Palani & Semmapatti Scenic Arterial',
-    codeName: 'ROUTE 3',
+    codeName: 'SECONDARY CORRIDOR',
     distanceKm: 228,
     durationMin: 281, // 4 hr 41 min
     trafficLevel: 'low',
@@ -211,11 +213,11 @@ const DEFAULT_ROUTES: RouteOption[] = [
       'Longer total travel distance (228 km)'
     ],
     aiExplanation:
-      'Route 3 offers light traffic across scenic foothills near Palani, but the narrower two-lane layout and winding topography result in longer travel duration.',
+      'Corridor offers light traffic across scenic foothills near Palani, but the narrower two-lane layout and winding topography result in longer travel duration.',
     eta: '4 hr 41 min',
     roadCondition: 'Moderate',
     weatherImpact: 'None',
-    color: '#94a3b8', // Muted Gray/Slate
+    color: '#f59e0b', // Amber
     coordinates: COIMBATORE_MADURAI_ROUTE_3,
     trafficSegments: [
       { coordinates: COIMBATORE_MADURAI_ROUTE_3.slice(0, 4), level: 'low' },
@@ -271,9 +273,15 @@ class RouteService {
     return this.currentRoutes.find((r) => r.id === id);
   }
 
+  getActiveCorridor(): { from: string; to: string } {
+    return { from: this.currentFrom, to: this.currentTo };
+  }
+
+
   /**
-   * Calculate routes between locations using real Google Maps Routes API if loaded,
-   * with fallback to verified route networks.
+   * Calculate routes between locations dynamically.
+   * Delegates to the verified engine in googleMapsService which handles
+   * whole-India geocoding, real Google Directions API, and high-accuracy corridors.
    */
   async calculateRoutes(params: {
     from: string;
@@ -283,50 +291,29 @@ class RouteService {
     priority?: string;
     vehicle?: string;
   }): Promise<RouteOption[]> {
-    this.currentFrom = params.from || 'Coimbatore';
-    this.currentTo = params.to || 'Madurai';
+    this.currentFrom = params.from?.trim() || 'Coimbatore';
+    this.currentTo = params.to?.trim() || 'Madurai';
 
-    // If Google Maps JS API is active in window, attempt real Google Directions calculation
-    if (window.google?.maps?.DirectionsService) {
-      try {
-        const directionsService = new window.google.maps.DirectionsService();
-        const request = {
-          origin: this.currentFrom,
-          destination: this.currentTo,
-          travelMode: window.google.maps.TravelMode.DRIVING,
-          provideRouteAlternatives: true,
-          drivingOptions: {
-            departureTime: new Date(),
-            trafficModel: window.google.maps.TrafficModel?.BEST_GUESS || 'bestguess'
-          }
-        };
+    const calculatedRoutes = await googleMapsService.calculateRoutes(this.currentFrom, this.currentTo);
 
-        const result = await new Promise<any>((resolve, reject) => {
-          directionsService.route(request, (res: any, status: any) => {
-            if (status === window.google.maps.DirectionsStatus.OK) {
-              resolve(res);
-            } else {
-              reject(status);
-            }
-          });
-        });
-
-        if (result.routes && result.routes.length > 0) {
-          const parsedRoutes = this.parseGoogleDirections(result);
-          this.currentRoutes = parsedRoutes;
-          simulationService.setRoutePolyline(parsedRoutes[0].coordinates, parsedRoutes[0].distanceKm);
-          return parsedRoutes;
-        }
-      } catch (err) {
-        console.warn('Google Maps route calculation notice:', err, '- using verified transit dataset.');
-      }
+    if (!calculatedRoutes || calculatedRoutes.length === 0) {
+      throw new Error(`Unable to determine route between ${this.currentFrom} and ${this.currentTo}`);
     }
 
-    // High quality deterministic calculation delay (500ms for responsiveness)
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    this.currentRoutes = calculatedRoutes;
+    const recommended = calculatedRoutes.find((r) => r.isRecommended) || calculatedRoutes[0];
 
-    // Update simulation service with active primary polyline
-    simulationService.setRoutePolyline(this.currentRoutes[0].coordinates, this.currentRoutes[0].distanceKm);
+    // Synchronize simulation service coordinates and distance
+    simulationService.setRoutePolyline(recommended.coordinates, recommended.distanceKm);
+
+    // Synchronize fleet vehicle tracking locations
+    vehicleTrackingService.updateFleetCorridor(
+      this.currentFrom,
+      this.currentTo,
+      recommended.distanceKm,
+      recommended.coordinates
+    );
+
     return [...this.currentRoutes];
   }
 
@@ -334,8 +321,8 @@ class RouteService {
    * Helper to parse Google Directions Result into RouteOption array
    */
   private parseGoogleDirections(res: any): RouteOption[] {
-    const colors = ['#00f0ff', '#f59e0b', '#94a3b8'];
-    const codeNames = ['ROUTE 1', 'ROUTE 2', 'ROUTE 3'];
+    const colors = ['#10b981', '#14b8a6', '#f59e0b'];
+    const codeNames = ['RECOMMENDED ROUTE', 'ALTERNATIVE ROUTE', 'SECONDARY CORRIDOR'];
 
     return res.routes.slice(0, 3).map((r: any, idx: number) => {
       const leg = r.legs[0];
@@ -363,7 +350,7 @@ class RouteService {
       });
 
       return {
-        id: idx === 0 ? 'route_b' : idx === 1 ? 'route_a' : 'route_c',
+        id: idx === 0 ? 'route_rec' : idx === 1 ? 'route_alt' : 'route_3',
         name: r.summary || `${this.currentFrom} → ${this.currentTo} via Highway ${idx + 1}`,
         codeName: codeNames[idx],
         distanceKm: distKm,
@@ -372,7 +359,7 @@ class RouteService {
         accessibilityScore: idx === 0 ? 94 : idx === 1 ? 82 : 78,
         elderlyFriendlinessScore: 90,
         delayRiskPercent: idx === 0 ? 12 : idx === 1 ? 38 : 16,
-        estimatedCostInr: Math.round(distKm * 6.6),
+        estimatedCostInr: Math.round(distKm * 6.8),
         smartScore: score,
         isRecommended: idx === 0,
         tagline: idx === 0 ? 'BEST ROUTE • AI RECOMMENDED' : idx === 1 ? 'HEAVY TRAFFIC' : 'ALTERNATIVE ROUTE',
@@ -405,15 +392,19 @@ class RouteService {
    * Live traffic status overview card data
    */
   getLiveTrafficInfo(): LiveTrafficInfo {
+    const primary = this.currentRoutes[0];
+    const isHeavy = primary?.trafficLevel === 'heavy';
+    const isMod = primary?.trafficLevel === 'moderate';
+
     return {
       routeSummary: `${this.currentFrom} → ${this.currentTo}`,
-      status: 'Moderate Traffic',
-      statusColor: '#f59e0b',
-      averageSpeedKmH: 52,
-      congestionPercent: 34,
-      lastUpdatedSecondsAgo: 18,
-      incidentCount: 1,
-      delayMinutes: 14
+      status: isHeavy ? 'Heavy Traffic' : isMod ? 'Moderate Traffic' : 'Normal',
+      statusColor: isHeavy ? '#ef4444' : isMod ? '#f59e0b' : '#10b981',
+      averageSpeedKmH: isHeavy ? 36 : isMod ? 52 : 64,
+      congestionPercent: isHeavy ? 64 : isMod ? 32 : 12,
+      lastUpdatedSecondsAgo: 6,
+      incidentCount: isHeavy ? 2 : isMod ? 1 : 0,
+      delayMinutes: isHeavy ? 26 : isMod ? 12 : 2
     };
   }
 

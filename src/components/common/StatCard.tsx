@@ -28,28 +28,27 @@ export const StatCard: React.FC<StatCardProps> = ({
     rose: 'from-rose-500/10 to-transparent border-rose-500/20 text-rose-400'
   }[glowColor];
 
-
   return (
-    <div className="relative group overflow-hidden rounded-2xl bg-[#0f172a]/90 border border-slate-800/80 p-5 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-slate-700 hover:shadow-cyan-950/20">
+    <div className="relative group overflow-hidden rounded-2xl bg-slate-900/80 dark:bg-[#0f172a]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 p-5 shadow-sm transition-all duration-300 hover:border-slate-700">
       <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${glowStyles} rounded-bl-full opacity-60 pointer-events-none transition-opacity duration-300 group-hover:opacity-100`} />
 
       <div className="relative flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 light:text-slate-500">
           {title}
         </span>
-        <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/50 shadow-inner">
+        <div className="p-2.5 rounded-xl bg-slate-800/80 dark:bg-slate-800/80 light:bg-slate-100 border border-slate-700/50 dark:border-slate-700/50 light:border-slate-200 shadow-inner">
           {icon}
         </div>
       </div>
 
       <div className="relative flex items-baseline gap-2">
-        <span className="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">
+        <span className="text-2xl sm:text-3xl font-extrabold font-mono text-white dark:text-white light:text-slate-900 tracking-tight">
           {value}
         </span>
         {change && (
           <span
             className={`inline-flex items-center text-xs font-semibold ${
-              isPositive ? 'text-emerald-400' : 'text-rose-400'
+              isPositive ? 'text-emerald-500 dark:text-emerald-400 light:text-emerald-600' : 'text-rose-500 dark:text-rose-400 light:text-rose-600'
             }`}
           >
             {isPositive ? (
@@ -63,7 +62,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       </div>
 
       {subtitle && (
-        <p className="relative text-xs text-slate-400 mt-2 font-medium">
+        <p className="relative text-xs text-slate-400 dark:text-slate-400 light:text-slate-500 mt-2 font-medium">
           {subtitle}
         </p>
       )}

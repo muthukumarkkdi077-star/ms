@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { VoiceAssistant } from '../assistant/VoiceAssistant';
 
 export const MainLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#090d16] text-slate-100 font-sans">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#090d16] dark:bg-[#090d16] light:bg-[#f8fafc] text-slate-100 dark:text-slate-100 light:text-slate-800 font-sans transition-colors duration-200">
       {/* Mobile Backdrop */}
       {isSidebarOpen && (
         <div
@@ -28,6 +29,9 @@ export const MainLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Universal Floating AI Voice Assistant */}
+      <VoiceAssistant />
     </div>
   );
 };

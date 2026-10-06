@@ -175,6 +175,54 @@
   ],
   "trips": [
     {
+      "id": "TRIP-863789",
+      "origin": "Coimbatore",
+      "destination": "Madurai",
+      "originCoords": [
+        11.0168,
+        76.9558
+      ],
+      "destCoords": [
+        9.9252,
+        78.1198
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 215,
+      "estimatedDurationMinutes": 239,
+      "recommendedRoadName": "NH 83 Express & Dindigul 4-Lane Bypass",
+      "startTime": "2026-10-05T21:14:23.789Z",
+      "eta": "3 hr 59 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 215
+    },
+    {
+      "id": "TRIP-854897",
+      "origin": "Madurai",
+      "destination": "Coimbatore",
+      "originCoords": [
+        9.9252,
+        78.1198
+      ],
+      "destCoords": [
+        11.0168,
+        76.9558
+      ],
+      "vehicleId": "veh_01",
+      "vehicleRegistration": "TN-38-AB-1204",
+      "driverName": "Arun Kumar",
+      "status": "ACTIVE",
+      "distanceKm": 215,
+      "estimatedDurationMinutes": 239,
+      "recommendedRoadName": "NH 83 Express & Dindigul 4-Lane Bypass",
+      "startTime": "2026-10-05T21:14:14.897Z",
+      "eta": "3 hr 59 min",
+      "distanceCompletedKm": 0,
+      "distanceRemainingKm": 215
+    },
+    {
       "id": "TRIP-306500",
       "origin": "Coimbatore",
       "destination": "Madurai",

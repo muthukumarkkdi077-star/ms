@@ -107,16 +107,16 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-3.5 sm:p-4 rounded-2xl bg-[#0f172a]/95 border border-slate-800 shadow-2xl backdrop-blur-xl text-slate-100 space-y-3"
+      className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 dark:bg-[#111822]/95 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-xl text-slate-100 dark:text-slate-100 light:text-slate-800 space-y-3"
     >
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-sm shadow-cyan-400" />
-          <h3 className="text-xs font-extrabold uppercase tracking-wider text-white">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" />
+          <h3 className="text-xs font-extrabold uppercase tracking-wider text-white dark:text-white light:text-slate-900">
             Smart Route Dispatcher
           </h3>
         </div>
-        <span className="text-[10px] font-mono text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+        <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
           WHOLE INDIA SEARCH
         </span>
       </div>
@@ -125,11 +125,11 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
         {/* FROM INPUT */}
         <div className="relative">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between mb-1">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              Origin (Anywhere in India)
+            <span className="flex items-center gap-1.5 text-emerald-400 font-extrabold">
+              <span>📍</span>
+              <span>Origin (Any Indian City or Hub)</span>
             </span>
-            {isSearchingFrom && <Loader2 className="w-3 h-3 text-cyan-400 animate-spin" />}
+            {isSearchingFrom && <Loader2 className="w-3 h-3 text-emerald-400 animate-spin" />}
           </label>
           <div className="relative flex items-center">
             <MapPin className="w-4 h-4 text-emerald-400 absolute left-3 pointer-events-none" />
@@ -140,8 +140,8 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
               onFocus={() => {
                 if (fromSuggestions.length > 0) setActiveDropdown('from');
               }}
-              placeholder="e.g. Coimbatore, Chennai, Bengaluru, Delhi..."
-              className="w-full pl-9 pr-8 py-2 text-xs bg-slate-900 border border-slate-700/80 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 font-medium transition-colors"
+              placeholder="e.g. Coimbatore, Chennai, Bangalore, Delhi..."
+              className="w-full pl-9 pr-8 py-2.5 text-xs bg-slate-950/70 dark:bg-[#0c1117] light:bg-slate-50 border border-slate-700/80 dark:border-slate-700/80 light:border-slate-300 rounded-xl text-white dark:text-white light:text-slate-900 placeholder-slate-500 focus:outline-none focus:border-emerald-400 font-medium transition-colors"
             />
             {from && (
               <button
@@ -151,7 +151,7 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
                   setFromSuggestions([]);
                   if (onOriginChange) onOriginChange('');
                 }}
-                className="absolute right-3 text-slate-400 hover:text-white text-xs cursor-pointer"
+                className="absolute right-3 text-slate-400 hover:text-white dark:hover:text-white light:hover:text-slate-800 text-xs cursor-pointer"
               >
                 ✕
               </button>
@@ -160,9 +160,9 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
 
           {/* Autocomplete Dropdown for FROM */}
           {activeDropdown === 'from' && fromSuggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 rounded-xl bg-[#090d16] border border-slate-700 shadow-2xl p-1.5 z-50 max-h-52 overflow-y-auto text-xs space-y-0.5">
+            <div className="absolute top-full left-0 right-0 mt-1 rounded-xl bg-[#0c1117] dark:bg-[#0c1117] light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-200 shadow-2xl p-1.5 z-50 max-h-52 overflow-y-auto text-xs space-y-0.5">
               <span className="px-2 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                Google Places Suggestions
+                Verified Locations
               </span>
               {fromSuggestions.map((place, idx) => (
                 <button
@@ -174,7 +174,7 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
                     setFromSuggestions([]);
                     if (onOriginChange) onOriginChange(place.name);
                   }}
-                  className="w-full flex items-start gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-cyan-500/15 hover:text-cyan-300 text-slate-200 transition-colors cursor-pointer"
+                  className="w-full flex items-start gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-emerald-500/15 hover:text-emerald-300 text-slate-200 transition-colors cursor-pointer"
                 >
                   <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                   <div className="min-w-0">
@@ -193,7 +193,7 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
             type="button"
             onClick={handleSwap}
             title="Swap Origin and Destination"
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-cyan-400 shadow-md transition-all active:rotate-180 duration-200 cursor-pointer"
+            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-emerald-400 shadow-md transition-all active:rotate-180 duration-200 cursor-pointer"
           >
             <ArrowRightLeft className="w-3.5 h-3.5" />
           </button>
@@ -202,14 +202,14 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
         {/* TO INPUT */}
         <div className="relative">
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between mb-1">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              Destination (Anywhere in India)
+            <span className="flex items-center gap-1.5 text-teal-400 font-extrabold">
+              <span>🏁</span>
+              <span>Destination (Any Indian City or Hub)</span>
             </span>
-            {isSearchingTo && <Loader2 className="w-3 h-3 text-cyan-400 animate-spin" />}
+            {isSearchingTo && <Loader2 className="w-3 h-3 text-teal-400 animate-spin" />}
           </label>
           <div className="relative flex items-center">
-            <Navigation className="w-4 h-4 text-cyan-400 absolute left-3 pointer-events-none" />
+            <Navigation className="w-4 h-4 text-teal-400 absolute left-3 pointer-events-none" />
             <input
               type="text"
               value={to}
@@ -218,7 +218,7 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
                 if (toSuggestions.length > 0) setActiveDropdown('to');
               }}
               placeholder="e.g. Madurai, Mumbai, Kochi, Hyderabad..."
-              className="w-full pl-9 pr-8 py-2 text-xs bg-slate-900 border border-slate-700/80 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 font-medium transition-colors"
+              className="w-full pl-9 pr-8 py-2.5 text-xs bg-slate-950/70 dark:bg-[#0c1117] light:bg-slate-50 border border-slate-700/80 dark:border-slate-700/80 light:border-slate-300 rounded-xl text-white dark:text-white light:text-slate-900 placeholder-slate-500 focus:outline-none focus:border-teal-400 font-medium transition-colors"
             />
             {to && (
               <button
@@ -228,7 +228,7 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
                   setToSuggestions([]);
                   if (onDestinationChange) onDestinationChange('');
                 }}
-                className="absolute right-3 text-slate-400 hover:text-white text-xs cursor-pointer"
+                className="absolute right-3 text-slate-400 hover:text-white dark:hover:text-white light:hover:text-slate-800 text-xs cursor-pointer"
               >
                 ✕
               </button>
@@ -237,9 +237,9 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
 
           {/* Autocomplete Dropdown for TO */}
           {activeDropdown === 'to' && toSuggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 rounded-xl bg-[#090d16] border border-slate-700 shadow-2xl p-1.5 z-50 max-h-52 overflow-y-auto text-xs space-y-0.5">
-              <span className="px-2 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                Google Places Suggestions
+            <div className="absolute top-full left-0 right-0 mt-1 rounded-xl bg-[#0c1117] dark:bg-[#0c1117] light:bg-white border border-slate-700 dark:border-slate-700 light:border-slate-200 shadow-2xl p-1.5 z-50 max-h-52 overflow-y-auto text-xs space-y-0.5">
+              <span className="px-2 py-1 text-[9px] font-bold text-slate-400 dark:text-slate-400 light:text-slate-500 uppercase tracking-wider block">
+                Verified Locations
               </span>
               {toSuggestions.map((place, idx) => (
                 <button
@@ -251,9 +251,9 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
                     setToSuggestions([]);
                     if (onDestinationChange) onDestinationChange(place.name);
                   }}
-                  className="w-full flex items-start gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-cyan-500/15 hover:text-cyan-300 text-slate-200 transition-colors cursor-pointer"
+                  className="w-full flex items-start gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-teal-500/15 text-slate-200 dark:text-slate-200 light:text-slate-800 hover:text-teal-300 dark:hover:text-teal-300 light:hover:text-teal-700 transition-colors cursor-pointer"
                 >
-                  <Navigation className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                  <Navigation className="w-3.5 h-3.5 text-teal-400 shrink-0 mt-0.5" />
                   <div className="min-w-0">
                     <span className="font-semibold block truncate">{place.name}</span>
                     <span className="text-[10px] text-slate-400 block truncate">{place.description}</span>
@@ -265,21 +265,21 @@ export const RoutePlanner: React.FC<RoutePlannerProps> = ({
         </div>
       </div>
 
-      {/* TRACK ROUTE SUBMIT BUTTON */}
+      {/* SEARCH FASTEST ROUTE SUBMIT BUTTON */}
       <button
         type="submit"
         disabled={isLoading || !from || !to}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/25 active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/25 active:scale-[0.98] disabled:opacity-50 cursor-pointer"
       >
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-            <span>Calculating Real-time Corridor...</span>
+            <span>Finding Fastest Route...</span>
           </>
         ) : (
           <>
             <Sparkles className="w-4 h-4 fill-current" />
-            <span>Dispatch & Track Route</span>
+            <span>Search Fastest Route</span>
           </>
         )}
       </button>

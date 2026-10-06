@@ -3,24 +3,39 @@
 
 @layer base {
   :root {
-    --color-bg-dark: #090d16;
-    --color-surface-dark: #0f172a;
-    --color-card-dark: #131d31;
-    --color-border-dark: #1e293b;
-    --color-cyan-glow: #00f0ff;
-    --color-electric-blue: #0284c7;
-    --color-accent-green: #10b981;
+    --bg-main: #0c1117;
+    --bg-surface: #111822;
+    --bg-card: #16202c;
+    --border-color: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --color-primary-emerald: #10b981;
+    --color-primary-emerald-dark: #059669;
+    --color-secondary-amber: #f59e0b;
+    --color-accent-coral: #ef4444;
+    --color-supporting-teal: #14b8a6;
     --color-warning: #f59e0b;
     --color-danger: #ef4444;
+  }
+
+  [data-theme="light"],
+  .light {
+    --bg-main: #fcfbf9;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
   }
 
   body {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #090d16;
-    color: #f1f5f9;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
@@ -30,77 +45,102 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #334155;
   border-radius: 9999px;
 }
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #475569;
+}
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-/* Leaflet Dark Mode Map Customization */
+/* Leaflet Map Customization - Dark & Light */
 .leaflet-container {
-  background-color: #0b0f19 !important;
+  background-color: #0c1117 !important;
   font-family: inherit;
   z-index: 1;
 }
 
+.light .leaflet-container {
+  background-color: #fcfbf9 !important;
+}
+
 .leaflet-control-zoom {
   border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
 }
 
 .leaflet-control-zoom a {
-  background-color: #131d31 !important;
+  background-color: #111822 !important;
   color: #94a3b8 !important;
   border-color: #1e293b !important;
   transition: all 0.2s ease;
 }
 
+.light .leaflet-control-zoom a {
+  background-color: #ffffff !important;
+  color: #475569 !important;
+  border-color: #e2e8f0 !important;
+}
+
 .leaflet-control-zoom a:hover {
   background-color: #1e293b !important;
-  color: #38bdf8 !important;
+  color: #10b981 !important;
+}
+
+.light .leaflet-control-zoom a:hover {
+  background-color: #f1f5f9 !important;
+  color: #059669 !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
+  background: #111822 !important;
   color: #f1f5f9 !important;
   border: 1px solid #1e293b !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.light .leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
+  background: #111822 !important;
 }
 
-/* Pulse animation for markers */
+.light .leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+/* Animations */
 @keyframes markerPulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(0, 240, 255, 0);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(0, 240, 255, 0);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
   }
 }
 
 .marker-pulse {
   animation: markerPulse 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
-}
-
-@keyframes pulseSlow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.animate-pulse-slow {
-  animation: pulseSlow 3s infinite ease-in-out;
 }

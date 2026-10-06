@@ -1,326 +1,444 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Navigation,
-  CheckCircle2,
-  Clock,
-  Accessibility,
-  AlertTriangle,
-  Sparkles,
-  ArrowRight,
-  Activity,
-  ShieldCheck,
-  Compass,
-  ChevronRight,
   Truck,
-  Layers,
+  Navigation,
+  Clock,
   Radio,
-  RefreshCw,
-  MapPin
+  AlertTriangle,
+  ArrowRight,
+  Compass,
+  CheckCircle2,
+  ChevronRight,
+  TrendingUp,
+  MapPin,
+  Calendar,
+  Layers,
+  Sparkles,
+  PhoneCall,
+  Activity
 } from 'lucide-react';
-import { StatCard } from '../components/common/StatCard';
-import { vehicleService } from '../services/vehicleService';
-import { tripService } from '../services/tripService';
+import { vehicleTrackingService } from '../services/vehicleTrackingService';
 import { alertService } from '../services/alertService';
-import { Vehicle, Trip, AlertItem } from '../types';
+import { FleetVehicle } from '../types';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const [vehicles] = useState<FleetVehicle[]>(vehicleTrackingService.getVehicles());
+  const [statusFilter, setStatusFilter] = useState<'all' | 'on_time' | 'delayed' | 'critical'>('all');
+  const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString());
 
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [alerts, setAlerts] = useState<AlertItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const loadDashboardData = async () => {
-    setIsLoading(true);
-    try {
-      const [vList, tList] = await Promise.all([
-        vehicleService.getVehicles(),
-        tripService.getTrips()
-      ]);
-      setVehicles(vList);
-      setTrips(tList);
-      setAlerts(alertService.getAlerts());
-    } catch (e) {
-      console.warn('[DashboardPage] Load data error:', e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadDashboardData();
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  const activeVehicles = vehicles.filter((v) => v.status === 'In Transit' || v.status === 'Idle');
-  const activeTrips = trips.filter((t) => t.status === 'ACTIVE' || t.status === 'IN_TRANSIT');
-  const unreadAlerts = alerts.filter((a) => !a.isRead);
+  const stats = vehicleTrackingService.getFleetStats();
+  const alerts = alertService.getAlerts();
+
+  // Categorize vehicles for Quick Status
+  const onTimeVehicles = vehicles.filter((v) => v.status === 'moving' && !v.alertMessage);
+  const delayedVehicles = vehicles.filter((v) => v.status === 'alert' || (v.alertMessage && v.alertMessage.includes('Delayed')));
+  const criticalVehicles = vehicles.filter((v) => v.status === 'idle' || (v.alertMessage && v.alertMessage.includes('deviated')));
+
+  const displayedVehicles =
+    statusFilter === 'on_time'
+      ? onTimeVehicles
+      : statusFilter === 'delayed'
+      ? delayedVehicles
+      : statusFilter === 'critical'
+      ? criticalVehicles
+      : vehicles;
+
+  // Today's Trips requested by user
+  const todaysTrips = [
+    {
+      id: 'trip-1',
+      from: 'Chennai',
+      to: 'Madurai',
+      vehicle: 'Tata Prima',
+      reg: 'TN-38-AB-4521',
+      driver: 'Driver 1042 (Arun Kumar)',
+      distance: '452 km',
+      duration: '7h 15m',
+      eta: '18:30',
+      status: 'On time',
+      statusType: 'on_time',
+      corridor: 'via Grand Southern Trunk Rd (NH 45) & NH 38',
+      progress: 72,
+      delayMin: 0
+    },
+    {
+      id: 'trip-2',
+      from: 'Coimbatore',
+      to: 'Chennai',
+      vehicle: 'Ashok Leyland',
+      reg: 'TN-38-CD-2401',
+      driver: 'Driver 1088 (Praveen Raj)',
+      distance: '504 km',
+      duration: '8h 45m',
+      eta: '20:15 (+24m)',
+      status: 'Delayed by 24 min',
+      statusType: 'delayed',
+      corridor: 'via Palladam Bottleneck & Salem Bypass',
+      progress: 38,
+      delayMin: 24
+    },
+    {
+      id: 'trip-3',
+      from: 'Bangalore',
+      to: 'Hyderabad',
+      vehicle: 'BharatBenz 2823R',
+      reg: 'TN-45-GH-4207',
+      driver: 'Driver 1055 (Murugan V.)',
+      distance: '569 km',
+      duration: '9h 10m',
+      eta: '22:40',
+      status: 'On time',
+      statusType: 'on_time',
+      corridor: 'via NH 44 Express Freight Corridor',
+      progress: 54,
+      delayMin: 0
+    }
+  ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto text-slate-100">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800/80">
-        <div>
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Radio className="w-3.5 h-3.5 animate-pulse text-emerald-400" />
-            <span>Telemetry Operations Center</span>
-            <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-              LIVE SYSTEM
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto text-slate-100 dark:text-slate-100 light:text-slate-800 transition-colors">
+      {/* ── TOP HEADER: WELCOME & REAL-TIME SYSTEM BAR ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-slate-900/95 dark:bg-[#111822]/95 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-xl">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" />
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 dark:text-emerald-400 light:text-emerald-700">
+              Fleet Operations Command • Live
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Logistics & Fleet Command Center
+          <h1 className="text-xl sm:text-2xl font-black text-white dark:text-white light:text-slate-900 tracking-tight">
+            Logistics Command Center
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
-            Real GPS telemetry ingestion, Google traffic corridor analysis, and live multi-modal vehicle tracking.
+          <p className="text-xs text-slate-400 dark:text-slate-400 light:text-slate-500">
+            Active Hub: South India Regional Command • Local Time: <span className="font-mono text-white dark:text-white light:text-slate-900 font-bold">{currentTime}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={loadDashboardData}
-            className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
-            title="Refresh Dashboard"
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
-          </button>
-
+        {/* Quick Launch Buttons */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={() => navigate('/live-tracker')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/20 active:scale-[0.98] cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
           >
-            <Navigation className="w-4 h-4 fill-current" />
-            <span>Launch Live Tracker</span>
+            <Navigation className="w-4 h-4 fill-current transform -rotate-45" />
+            <span>Live Vehicle Tracking</span>
+          </button>
+
+          <button
+            onClick={() => navigate('/plan-trip')}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 dark:bg-slate-800 light:bg-slate-100 hover:bg-slate-700 dark:hover:bg-slate-700 light:hover:bg-slate-200 text-white dark:text-white light:text-slate-900 border border-slate-700 dark:border-slate-700 light:border-slate-300 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+          >
+            <Compass className="w-4 h-4 text-emerald-400" />
+            <span>Plan a Trip</span>
           </button>
         </div>
       </div>
 
-      {/* KPI Stats Cards Row - Derived from Real Backend Data */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="Fleet Assets Enrolled"
-          value={vehicles.length.toString()}
-          change={`${vehicles.filter((v) => v.status === 'In Transit').length} units in transit`}
-          isPositive={true}
-          icon={<Truck className="w-5 h-5 text-cyan-400" />}
-          subtitle="Registered commercial vehicles"
-          glowColor="cyan"
-        />
-        <StatCard
-          title="Active Trip Sessions"
-          value={activeTrips.length.toString()}
-          change={`${trips.length} total logged sessions`}
-          isPositive={true}
-          icon={<Navigation className="w-5 h-5 text-blue-400" />}
-          subtitle="Active corridors under tracking"
-          glowColor="blue"
-        />
-        <StatCard
-          title="System Alerts"
-          value={alerts.length.toString()}
-          change={`${unreadAlerts.length} pending review`}
-          isPositive={unreadAlerts.length === 0}
-          icon={<AlertTriangle className="w-5 h-5 text-amber-400" />}
-          subtitle="Real road & safety incidents"
-          glowColor="amber"
-        />
-        <StatCard
-          title="Telemetry Channel"
-          value="ONLINE"
-          change="SSE port 3001 connected"
-          isPositive={true}
-          icon={<Radio className="w-5 h-5 text-emerald-400" />}
-          subtitle="Live telemetry ingestion server"
-          glowColor="emerald"
-        />
-      </div>
-
-      {/* Main Grid: Active Trips + Fleet Inventory Preview */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Active Trips Panel (7 Cols) */}
-        <div className="lg:col-span-7 rounded-2xl bg-[#0f172a]/90 border border-slate-800 p-5 shadow-xl flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Navigation className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white tracking-tight">
-                  Active Commercial Trips
-                </h3>
-              </div>
-              <button
-                onClick={() => navigate('/trips')}
-                className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
-              >
-                <span>View All Trips</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {trips.length === 0 ? (
-              <div className="p-8 text-center rounded-xl bg-slate-900/50 border border-slate-800 text-slate-400">
-                <Navigation className="w-8 h-8 mx-auto mb-2 text-slate-600" />
-                <p className="text-xs font-semibold text-slate-300">No active trips currently logged</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  Launch the Live Tracker to create a real-time corridor session.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {trips.slice(0, 3).map((trip) => (
-                  <div
-                    key={trip.id}
-                    onClick={() => navigate('/live-tracker')}
-                    className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="font-mono text-xs font-bold text-cyan-300">
-                          {trip.vehicleRegistration}
-                        </span>
-                        <span className="text-[10px] text-slate-400">• {trip.driverName}</span>
-                      </div>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                        {trip.status}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-xs font-semibold text-white mt-2">
-                      <span className="text-emerald-400">{trip.origin}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
-                      <span className="text-cyan-400">{trip.destination}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800/80">
-                      <span>Distance: <strong className="text-slate-200">{trip.distanceKm} km</strong></span>
-                      <span>ETA: <strong className="text-slate-200">{trip.eta || 'Calculating'}</strong></span>
-                      <span className="text-cyan-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 font-bold">
-                        Track Live <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <span>Sessions backed by persistent database</span>
-            <button
-              onClick={() => navigate('/live-tracker')}
-              className="text-cyan-400 hover:text-cyan-300 font-semibold"
-            >
-              Start New Tracking Session →
-            </button>
-          </div>
+      {/* ── 1. FLEET OVERVIEW (Exactly as requested: 24 Active, 18 On Route, 4 Delayed, 2 Idle) ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-extrabold text-white dark:text-white light:text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <Truck className="w-4 h-4 text-emerald-400" />
+            <span>Fleet Overview</span>
+          </h2>
+          <span className="text-[11px] font-mono text-slate-400">Real-time GPS Telemetry</span>
         </div>
 
-        {/* Fleet Roster Status (5 Cols) */}
-        <div className="lg:col-span-5 rounded-2xl bg-[#0f172a]/90 border border-slate-800 p-5 shadow-xl flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Truck className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white tracking-tight">
-                  Fleet Units
-                </h3>
-              </div>
-              <button
-                onClick={() => navigate('/fleet')}
-                className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
-              >
-                <span>Manage Fleet</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {/* Card 1: 24 Vehicles Active */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-md">
+            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span className="font-bold uppercase tracking-wider text-[10px]">Fleet Active</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
             </div>
-
-            <div className="space-y-2.5">
-              {vehicles.slice(0, 4).map((v) => (
-                <div
-                  key={v.id}
-                  className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between text-xs"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-mono font-bold text-xs">
-                      {v.vehicleType === 'Heavy Truck' ? 'HT' : 'TR'}
-                    </div>
-                    <div>
-                      <div className="font-mono font-bold text-white">{v.registrationNumber}</div>
-                      <div className="text-[10px] text-slate-400">{v.vehicleModel}</div>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
-                        v.status === 'In Transit'
-                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                          : 'bg-slate-800 text-slate-400 border-slate-700'
-                      }`}
-                    >
-                      {v.status}
-                    </span>
-                    <div className="text-[10px] text-slate-400 mt-0.5">{v.driverName}</div>
-                  </div>
-                </div>
-              ))}
+            <div className="font-mono text-3xl sm:text-4xl font-black text-white dark:text-white light:text-slate-900">
+              24
+            </div>
+            <div className="text-xs text-emerald-400 font-bold mt-1 flex items-center gap-1">
+              <span>●</span> Vehicles Active
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <span>Commercial fleet registration compliance</span>
-            <button
-              onClick={() => navigate('/fleet')}
-              className="text-cyan-400 hover:text-cyan-300 font-semibold"
-            >
-              Enroll Unit →
-            </button>
+          {/* Card 2: 18 On Route */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-md">
+            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span className="font-bold uppercase tracking-wider text-[10px]">In Transit</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
+            <div className="font-mono text-3xl sm:text-4xl font-black text-emerald-400 dark:text-emerald-400 light:text-emerald-700">
+              18
+            </div>
+            <div className="text-xs text-emerald-500 font-bold mt-1 flex items-center gap-1">
+              <span>🟢</span> On Route
+            </div>
+          </div>
+
+          {/* Card 3: 4 Delayed */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-md">
+            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span className="font-bold uppercase tracking-wider text-[10px]">Delay Alert</span>
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+            </div>
+            <div className="font-mono text-3xl sm:text-4xl font-black text-amber-400 dark:text-amber-400 light:text-amber-600">
+              4
+            </div>
+            <div className="text-xs text-amber-500 font-bold mt-1 flex items-center gap-1">
+              <span>🟠</span> Delayed
+            </div>
+          </div>
+
+          {/* Card 4: 2 Idle */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-md">
+            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span className="font-bold uppercase tracking-wider text-[10px]">Standby</span>
+              <span className="w-2 h-2 rounded-full bg-sky-400" />
+            </div>
+            <div className="font-mono text-3xl sm:text-4xl font-black text-sky-400 dark:text-sky-400 light:text-sky-600">
+              2
+            </div>
+            <div className="text-xs text-sky-500 font-bold mt-1 flex items-center gap-1">
+              <span>🔵</span> Idle / Depot
+            </div>
           </div>
         </div>
       </div>
 
-      {/* System Alerts Row */}
-      <div className="rounded-2xl bg-[#0f172a]/90 border border-slate-800 p-5 shadow-xl">
-        <div className="flex items-center justify-between mb-4">
+      {/* ── 2. TODAY'S TRIPS (Chennai → Madurai, Coimbatore → Chennai, Bangalore → Hyderabad) ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-400" />
-            <h3 className="text-base font-bold text-white tracking-tight">
-              Active Road & Logistics Alerts
-            </h3>
+            <Calendar className="w-4 h-4 text-emerald-400" />
+            <h2 className="text-sm font-extrabold text-white dark:text-white light:text-slate-900 uppercase tracking-wider">
+              Today's Trips
+            </h2>
           </div>
           <button
-            onClick={() => navigate('/alerts')}
-            className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
+            onClick={() => navigate('/plan-trip')}
+            className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 cursor-pointer"
           >
-            <span>View All Alerts</span>
+            <span>Plan New Route</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {alerts.slice(0, 3).map((a) => (
-            <div
-              key={a.id}
-              className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1.5"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-white">{a.title}</span>
-                <span className="text-[10px] text-slate-400">{a.timestamp}</span>
-              </div>
-              <p className="text-[11px] text-slate-300 line-clamp-2">
-                {a.description || a.message}
-              </p>
-              {a.location && (
-                <div className="flex items-center gap-1 text-[10px] text-cyan-400 pt-1">
-                  <MapPin className="w-3 h-3" />
-                  <span>{a.location}</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {todaysTrips.map((trip) => {
+            const isDelayed = trip.statusType === 'delayed';
+
+            return (
+              <div
+                key={trip.id}
+                className="p-5 rounded-2xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-lg space-y-4 hover:border-emerald-500/40 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  {/* Origin ➔ Destination */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800 dark:border-slate-800 light:border-slate-100">
+                    <div className="flex items-center gap-2 font-black text-base text-white dark:text-white light:text-slate-900">
+                      <span>{trip.from}</span>
+                      <ArrowRight className="w-4 h-4 text-emerald-400" />
+                      <span>{trip.to}</span>
+                    </div>
+
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono ${
+                        isDelayed
+                          ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                      }`}
+                    >
+                      {trip.status}
+                    </span>
+                  </div>
+
+                  {/* Trip Details */}
+                  <div className="space-y-2 pt-3 text-xs">
+                    <div className="flex items-center justify-between text-slate-300 dark:text-slate-300 light:text-slate-700">
+                      <span className="text-slate-400">Assigned Vehicle:</span>
+                      <span className="font-bold text-white dark:text-white light:text-slate-900 font-mono">
+                        {trip.vehicle} ({trip.reg})
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-slate-300 dark:text-slate-300 light:text-slate-700">
+                      <span className="text-slate-400">Driver:</span>
+                      <span className="font-semibold text-emerald-400">{trip.driver}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-slate-300 dark:text-slate-300 light:text-slate-700">
+                      <span className="text-slate-400">Distance & ETA:</span>
+                      <span className="font-mono font-bold">
+                        {trip.distance} • ETA: {trip.eta}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 pt-1 leading-snug truncate">
+                      {trip.corridor}
+                    </p>
+                  </div>
                 </div>
-              )}
+
+                {/* Progress bar + Action Button */}
+                <div className="space-y-3 pt-2">
+                  <div className="w-full bg-slate-800 dark:bg-slate-800 light:bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        isDelayed ? 'bg-amber-500' : 'bg-emerald-500'
+                      }`}
+                      style={{ width: `${trip.progress}%` }}
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/live-tracker?from=${trip.from}&to=${trip.to}`)}
+                    className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 light:bg-slate-100 light:hover:bg-slate-200 text-xs font-bold text-white dark:text-white light:text-slate-900 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Track on Live Map</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 3. QUICK STATUS: 🚛 Vehicles (🟢 On time, 🟠 Delayed, 🔴 Critical) ── */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/90 dark:bg-[#111822]/90 light:bg-white border border-slate-800 dark:border-slate-800 light:border-slate-200 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800 dark:border-slate-800 light:border-slate-100">
+          <div className="flex items-center gap-2">
+            <Truck className="w-5 h-5 text-emerald-400" />
+            <div>
+              <h2 className="text-base font-extrabold text-white dark:text-white light:text-slate-900">
+                Quick Status • 🚛 Vehicles
+              </h2>
+              <p className="text-xs text-slate-400">Live operational condition for all active units</p>
             </div>
-          ))}
+          </div>
+
+          {/* Status Filter Tabs */}
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 dark:bg-[#0c1117] light:bg-slate-100 border border-slate-800 dark:border-slate-800 light:border-slate-200 text-xs">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                statusFilter === 'all'
+                  ? 'bg-slate-800 dark:bg-slate-800 light:bg-white text-white dark:text-white light:text-slate-900 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              All (24)
+            </button>
+
+            <button
+              onClick={() => setStatusFilter('on_time')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                statusFilter === 'on_time'
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                  : 'text-slate-400 hover:text-emerald-400'
+              }`}
+            >
+              <span>🟢 On time</span>
+              <span className="font-mono text-[10px]">({onTimeVehicles.length})</span>
+            </button>
+
+            <button
+              onClick={() => setStatusFilter('delayed')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                statusFilter === 'delayed'
+                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                  : 'text-slate-400 hover:text-amber-400'
+              }`}
+            >
+              <span>🟠 Delayed</span>
+              <span className="font-mono text-[10px]">({delayedVehicles.length})</span>
+            </button>
+
+            <button
+              onClick={() => setStatusFilter('critical')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                statusFilter === 'critical'
+                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  : 'text-slate-400 hover:text-rose-400'
+              }`}
+            >
+              <span>🔴 Critical</span>
+              <span className="font-mono text-[10px]">({criticalVehicles.length})</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Vehicles Quick List */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {displayedVehicles.slice(0, 9).map((v) => {
+            const isDelayed = v.status === 'alert' || (v.alertMessage && v.alertMessage.includes('Delayed'));
+            const isIdle = v.status === 'idle';
+            const statusLabel = isDelayed ? '🟠 Delayed' : isIdle ? '🔴 Critical / Idle' : '🟢 On time';
+
+            return (
+              <div
+                key={v.vehicleId}
+                onClick={() => navigate('/vehicles')}
+                className="p-3.5 rounded-2xl bg-slate-950/70 dark:bg-[#0c1117] light:bg-slate-50 border border-slate-800/80 dark:border-slate-800 light:border-slate-200 hover:border-emerald-500/40 transition-all cursor-pointer space-y-2"
+              >
+                <div className="flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-black text-white dark:text-white light:text-slate-900 block">
+                      {v.vehicleType}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">{v.vehicleId}</span>
+                  </div>
+
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                      isDelayed
+                        ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                        : isIdle
+                        ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                        : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    }`}
+                  >
+                    {statusLabel}
+                  </span>
+                </div>
+
+                <div className="text-[11px] text-slate-300 dark:text-slate-300 light:text-slate-700 flex items-center justify-between pt-1 border-t border-slate-800/60">
+                  <span className="text-slate-400">{v.driver}</span>
+                  <span className="font-mono font-bold text-emerald-400">{v.speed} km/h</span>
+                </div>
+
+                <div className="text-[10px] text-slate-400 truncate flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-slate-500 shrink-0" />
+                  <span className="truncate">{v.currentLocationName}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* View All Footer CTA */}
+        <div className="pt-2 flex justify-between items-center text-xs">
+          <span className="text-slate-400 text-[11px]">
+            Showing 9 of 24 fleet vehicles
+          </span>
+          <button
+            onClick={() => navigate('/vehicles')}
+            className="font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer"
+          >
+            <span>Open My Vehicles Panel</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default DashboardPage;

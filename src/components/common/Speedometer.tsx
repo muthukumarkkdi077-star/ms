@@ -60,14 +60,14 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
   const ticks = [0, 20, 40, 60, 80, 100, 120];
 
   return (
-    <div className="flex flex-col items-center p-4 rounded-2xl bg-[#090d16]/90 border border-slate-800 shadow-xl">
+    <div className="flex flex-col items-center p-4 rounded-2xl bg-white dark:bg-[#090d16]/90 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl text-slate-900 dark:text-slate-100">
       {/* Gauge SVG Canvas */}
       <div className="relative" style={{ width: size, height: size * 0.85 }}>
         <svg viewBox="0 0 200 175" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id="speedGaugeNormal" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#00f0ff" />
-              <stop offset="70%" stopColor="#38bdf8" />
+              <stop offset="0%" stopColor="#0284c7" />
+              <stop offset="70%" stopColor="#0ea5e9" />
               <stop offset="100%" stopColor="#10b981" />
             </linearGradient>
             <linearGradient id="speedGaugeAlert" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -76,7 +76,7 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
               <stop offset="100%" stopColor="#f43f5e" />
             </linearGradient>
             <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
           </defs>
@@ -85,7 +85,7 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
           <path
             d={backgroundArc}
             fill="none"
-            stroke="#1e293b"
+            className="stroke-slate-200 dark:stroke-slate-800"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
@@ -122,11 +122,8 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
                 key={t}
                 x={pt.x}
                 y={pt.y + 3}
-                fill="#64748b"
-                fontSize="8"
-                fontWeight="bold"
+                className="fill-slate-400 dark:fill-slate-500 font-mono text-[8px] font-bold"
                 textAnchor="middle"
-                fontFamily="monospace"
               >
                 {t}
               </text>
@@ -140,33 +137,26 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
           >
             <polygon
               points={`${center - 2},${center} ${center + 2},${center} ${center},${center - radius + 8}`}
-              fill={isOverLimit ? '#ef4444' : '#00f0ff'}
+              fill={isOverLimit ? '#ef4444' : '#0284c7'}
               filter="url(#gaugeGlow)"
             />
-            <circle cx={center} cy={center} r="6" fill="#0f172a" stroke={isOverLimit ? '#ef4444' : '#00f0ff'} strokeWidth="2.5" />
+            <circle cx={center} cy={center} r="6" className="fill-white dark:fill-slate-900" stroke={isOverLimit ? '#ef4444' : '#0284c7'} strokeWidth="2.5" />
           </g>
 
           {/* Digital Readout inside Center */}
           <text
             x={center}
             y={center + 28}
-            fill="#ffffff"
-            fontSize="26"
-            fontWeight="900"
+            className="fill-slate-900 dark:fill-white font-mono font-black text-[26px] tracking-tight"
             textAnchor="middle"
-            fontFamily="monospace"
-            className="tracking-tight"
           >
             {Math.round(speed)}
           </text>
           <text
             x={center}
             y={center + 42}
-            fill={isOverLimit ? '#f87171' : '#38bdf8'}
-            fontSize="10"
-            fontWeight="bold"
+            className={`text-[10px] font-bold tracking-wider ${isOverLimit ? 'fill-rose-500' : 'fill-sky-600 dark:fill-sky-400'}`}
             textAnchor="middle"
-            letterSpacing="1"
           >
             KM / H
           </text>
@@ -174,22 +164,22 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
       </div>
 
       {/* Speed Metrics Table */}
-      <div className="w-full grid grid-cols-3 gap-2 mt-1 pt-3 border-t border-slate-800 text-center text-xs">
+      <div className="w-full grid grid-cols-3 gap-2 mt-1 pt-3 border-t border-slate-200 dark:border-slate-800 text-center text-xs">
         <div>
-          <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Current</span>
-          <span className={`font-mono font-extrabold text-sm ${isOverLimit ? 'text-rose-400' : 'text-cyan-300'}`}>
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Current</span>
+          <span className={`font-mono font-extrabold text-sm ${isOverLimit ? 'text-rose-600 dark:text-rose-400' : 'text-sky-600 dark:text-cyan-300'}`}>
             {speed} km/h
           </span>
         </div>
         <div>
-          <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Average</span>
-          <span className="font-mono font-bold text-sm text-slate-200">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Average</span>
+          <span className="font-mono font-bold text-sm text-slate-800 dark:text-slate-200">
             {averageSpeed} km/h
           </span>
         </div>
         <div>
-          <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Speed Limit</span>
-          <span className="font-mono font-bold text-sm text-slate-300">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Speed Limit</span>
+          <span className="font-mono font-bold text-sm text-slate-800 dark:text-slate-300">
             {speedLimit} km/h
           </span>
         </div>
@@ -198,13 +188,13 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
       {/* Speed Status Badge */}
       <div className="mt-3 w-full">
         {isOverLimit ? (
-          <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold animate-pulse">
-            <AlertTriangle className="w-4 h-4 text-rose-400" />
+          <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-500/20 border border-rose-200 dark:border-rose-500/40 text-rose-700 dark:text-rose-300 text-xs font-bold animate-pulse">
+            <AlertTriangle className="w-4 h-4 text-rose-500 dark:text-rose-400" />
             <span>SPEED ALERT: OVERSPEEDING (+{speed - speedLimit} km/h)</span>
           </div>
         ) : (
-          <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>Status: Within Safe Limit</span>
           </div>
         )}

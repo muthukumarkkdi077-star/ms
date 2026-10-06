@@ -53,12 +53,12 @@ class SimulationService {
 
   // Active simulated fleet on the selected route
   private simStates: Map<string, VehicleSimState> = new Map([
-    ['RM-204', { vehicleId: 'RM-204', progressPercent: 68, targetSpeed: 68, isMoving: true }],
-    ['RM-201', { vehicleId: 'RM-201', progressPercent: 35, targetSpeed: 0, isMoving: false }],
-    ['RM-202', { vehicleId: 'RM-202', progressPercent: 14, targetSpeed: 74, isMoving: true }],
-    ['RM-207', { vehicleId: 'RM-207', progressPercent: 48, targetSpeed: 52, isMoving: true }],
-    ['RM-211', { vehicleId: 'RM-211', progressPercent: 91, targetSpeed: 62, isMoving: true }],
-    ['RM-215', { vehicleId: 'RM-215', progressPercent: 62, targetSpeed: 96, isMoving: true }]
+    ['TN-38-AB-4521', { vehicleId: 'TN-38-AB-4521', progressPercent: 68, targetSpeed: 68, isMoving: true }],
+    ['TN-38-CD-2401', { vehicleId: 'TN-38-CD-2401', progressPercent: 35, targetSpeed: 0, isMoving: false }],
+    ['TN-59-EF-3102', { vehicleId: 'TN-59-EF-3102', progressPercent: 14, targetSpeed: 74, isMoving: true }],
+    ['TN-45-GH-4207', { vehicleId: 'TN-45-GH-4207', progressPercent: 48, targetSpeed: 52, isMoving: true }],
+    ['TN-37-JK-5510', { vehicleId: 'TN-37-JK-5510', progressPercent: 91, targetSpeed: 62, isMoving: true }],
+    ['TN-38-MN-6184', { vehicleId: 'TN-38-MN-6184', progressPercent: 62, targetSpeed: 96, isMoving: true }]
   ]);
 
   constructor() {

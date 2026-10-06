@@ -93,19 +93,19 @@ export const FleetPage: React.FC = () => {
   });
 
   return (
-    <div className="flex-1 flex flex-col p-4 sm:p-6 bg-[#090d16] text-slate-100 overflow-y-auto space-y-6">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 overflow-y-auto space-y-6">
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Fleet Operations Inventory
             </h1>
-            <span className="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+            <span className="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">
               {vehicles.length} Units
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Real Indian commercial registrations, active telematics hardware, and driver rosters.
           </p>
         </div>
@@ -113,15 +113,15 @@ export const FleetPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchVehicles}
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 transition-colors cursor-pointer"
             title="Refresh Fleet Data"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-cyan-500' : ''}`} />
           </button>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Enroll New Vehicle</span>
@@ -138,7 +138,7 @@ export const FleetPage: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search registration (e.g. TN-38), model, or driver..."
-            className="w-full pl-9 pr-4 py-2 text-xs bg-[#0f172a] border border-slate-800 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+            className="w-full pl-9 pr-4 py-2 text-xs bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
           />
         </div>
 
@@ -150,8 +150,8 @@ export const FleetPage: React.FC = () => {
               onClick={() => setFilterStatus(status)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 filterStatus === status
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/40 shadow-sm'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               {status === 'all' ? 'All Vehicles' : status}
@@ -163,13 +163,13 @@ export const FleetPage: React.FC = () => {
       {/* Fleet Grid */}
       {isLoading ? (
         <div className="text-center py-16 text-slate-400">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-cyan-400" />
+          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-cyan-500" />
           <p className="text-xs">Querying fleet registry from database...</p>
         </div>
       ) : filteredVehicles.length === 0 ? (
-        <div className="text-center py-16 rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400">
-          <Truck className="w-10 h-10 mx-auto mb-3 text-slate-600" />
-          <p className="text-sm font-semibold text-white">No fleet assets match your filter</p>
+        <div className="text-center py-16 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+          <Truck className="w-10 h-10 mx-auto mb-3 text-slate-400 dark:text-slate-600" />
+          <p className="text-sm font-semibold text-slate-900 dark:text-white">No fleet assets match your filter</p>
           <p className="text-xs text-slate-500 mt-1">Try adjusting your search criteria or register a new vehicle.</p>
         </div>
       ) : (
@@ -179,21 +179,21 @@ export const FleetPage: React.FC = () => {
             return (
               <div
                 key={vehicle.id}
-                className="rounded-2xl bg-[#0f172a]/95 border border-slate-800 hover:border-slate-700/80 p-5 space-y-4 shadow-xl transition-all group"
+                className="rounded-2xl bg-white dark:bg-[#0f172a]/95 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 p-5 space-y-4 shadow-sm dark:shadow-xl transition-all group"
               >
                 {/* Card Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 group-hover:scale-105 transition-transform">
                       <Truck className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-extrabold text-sm text-white tracking-wide">
+                        <span className="font-mono font-extrabold text-sm text-slate-900 dark:text-white tracking-wide">
                           {vehicle.registrationNumber}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 font-medium">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                         {vehicle.vehicleModel}
                       </p>
                     </div>
@@ -202,10 +202,10 @@ export const FleetPage: React.FC = () => {
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                       isTransit
-                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                        ? 'bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30'
                         : vehicle.status === 'Idle'
-                        ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
+                        ? 'bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
                     }`}
                   >
                     {vehicle.status}
@@ -213,35 +213,35 @@ export const FleetPage: React.FC = () => {
                 </div>
 
                 {/* Specs Grid */}
-                <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-xl bg-slate-900/80 border border-slate-800/80">
+                <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800/80">
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Vehicle Type</span>
-                    <span className="font-semibold text-slate-200">{vehicle.vehicleType}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Vehicle Type</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{vehicle.vehicleType}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Fuel / Powertrain</span>
-                    <span className="font-semibold text-cyan-300">{vehicle.fuelType}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Fuel / Powertrain</span>
+                    <span className="font-semibold text-cyan-700 dark:text-cyan-300">{vehicle.fuelType}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Assigned Driver</span>
-                    <span className="font-semibold text-white truncate block">{vehicle.driverName || 'Unassigned'}</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Assigned Driver</span>
+                    <span className="font-semibold text-slate-900 dark:text-white truncate block">{vehicle.driverName || 'Unassigned'}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Speed Governor</span>
-                    <span className="font-mono font-semibold text-slate-200">{vehicle.speedLimit} km/h</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Speed Governor</span>
+                    <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{vehicle.speedLimit} km/h</span>
                   </div>
                 </div>
 
                 {/* Telemetry Status Line */}
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
                   <span className="flex items-center gap-1.5">
-                    <Radio className={`w-3.5 h-3.5 ${vehicle.lastKnownLocation ? 'text-emerald-400' : 'text-slate-600'}`} />
+                    <Radio className={`w-3.5 h-3.5 ${vehicle.lastKnownLocation ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-400'}`} />
                     <span>{vehicle.lastKnownLocation ? `${vehicle.lastKnownLocation.locationName || 'Telemetry Active'}` : 'GPS Telemetry Standby'}</span>
                   </span>
 
                   <button
                     onClick={() => navigate('/live-tracker')}
-                    className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-bold transition-colors cursor-pointer"
+                    className="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-bold transition-colors cursor-pointer"
                   >
                     <span>Track on Map</span>
                     <Navigation className="w-3 h-3" />
@@ -255,21 +255,21 @@ export const FleetPage: React.FC = () => {
 
       {/* ENROLL VEHICLE MODAL */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#0f172a] border border-slate-700 rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Truck className="w-5 h-5 text-cyan-400" />
-                <h3 className="font-extrabold text-base text-white">Enroll Fleet Commercial Asset</h3>
+                <Truck className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Enroll Fleet Commercial Asset</h3>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleAddVehicle} className="space-y-3 text-xs">
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                   Registration Number (Indian Standard)
                 </label>
                 <input
@@ -278,12 +278,12 @@ export const FleetPage: React.FC = () => {
                   value={newReg}
                   onChange={(e) => setNewReg(e.target.value)}
                   placeholder="e.g. TN-38-AB-1204, KA-01-MJ-4050"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono uppercase font-semibold focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-mono uppercase font-semibold focus:outline-none focus:border-cyan-500"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                   Make & Model
                 </label>
                 <input
@@ -292,19 +292,19 @@ export const FleetPage: React.FC = () => {
                   value={newModel}
                   onChange={(e) => setNewModel(e.target.value)}
                   placeholder="e.g. Tata Prima 5530.S, Ashok Leyland 2820"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                     Vehicle Type
                   </label>
                   <select
                     value={newType}
                     onChange={(e) => setNewType(e.target.value as VehicleType)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
                   >
                     <option value="Heavy Truck">Heavy Truck</option>
                     <option value="Truck">Truck</option>
@@ -317,13 +317,13 @@ export const FleetPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                     Fuel Type
                   </label>
                   <select
                     value={newFuel}
                     onChange={(e) => setNewFuel(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
                   >
                     <option value="Diesel">Diesel</option>
                     <option value="Electric">Electric</option>
@@ -334,7 +334,7 @@ export const FleetPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                   Assigned Driver Name
                 </label>
                 <input
@@ -342,7 +342,7 @@ export const FleetPage: React.FC = () => {
                   value={newDriver}
                   onChange={(e) => setNewDriver(e.target.value)}
                   placeholder="e.g. R. Subramanian, K. Muthukumar"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500"
                 />
               </div>
 
@@ -350,14 +350,14 @@ export const FleetPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold"
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-bold transition-all shadow-md shadow-cyan-500/25"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold transition-all shadow-md shadow-cyan-500/25 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? 'Registering...' : 'Register Vehicle'}
                 </button>
